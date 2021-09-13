@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.russellharveylab03_03">
+    package="com.example.russellharveylab03_03"
+    android:sharedUserId="com.russell"
+    android:sharedUserLabel="@string/russell">
 
     <application
         android:allowBackup="true"
