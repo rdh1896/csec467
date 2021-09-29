@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">russellharveylab04_creator</string>
+    <string name="perm_desc">Use "WiFi" service from Lab04</string>
+    <string name="perm_label">Lab04 Permission</string>
 </resources>
