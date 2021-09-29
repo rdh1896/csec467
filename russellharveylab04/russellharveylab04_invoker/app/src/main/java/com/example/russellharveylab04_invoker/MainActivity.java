@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,9 +15,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Intent i = new Intent();
-        i.putExtra("message", "Hello World!");
 
-        i.setComponent(new ComponentName("com.example.russellharveylab04_creator", "com.example.russellharveylab04_creator.wifi"));
+        i.setComponent(new ComponentName("com.example.russellharveylab04_creator", "com.example.russellharveylab04_creator.intentwifi"));
         startService(i);
     }
 }

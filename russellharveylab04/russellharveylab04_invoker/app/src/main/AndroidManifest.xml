@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.russellharveylab04_invoker">
-    <uses-permission android:name="com.example.russellharveylab04_creator.permissions.myperm"/>
+    <uses-permission android:name="com.example.russellharveylab04_creator.permissions.myperm" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,6 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Russellharveylab04_invoker">
+        <service
+            android:name=".reciever"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
