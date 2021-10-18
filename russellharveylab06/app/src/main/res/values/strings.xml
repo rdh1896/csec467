@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">russellharveylab06</string>
+    <string name="user">Username</string>
+    <string name="pass">Password</string>
+    <string name="reg">Register</string>
+    <string name="log">Login</string>
+    <string name="act_1">Activity #1</string>
+    <string name="act_2">Activity #2</string>
+    <string name="act_3">Activity #3</string>
+    <string name="acct_label">Lab 06 Account</string>
 </resources>
