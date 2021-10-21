@@ -36,14 +36,12 @@ public class MainActivity extends AppCompatActivity {
                 thePhantomBean = true;
                 if (am.getPassword(A).compareTo(p) == 0) {
                     Intent i = new Intent(this, MainActivity3.class);
+                    i.putExtra("keyAlias", u + "_key");
                     startActivity(i);
                 } else {
                     String error = "LOGIN FAILED: PASSWORD DOES NOT MATCH STORED VALUE";
                     Toast.makeText(this, error, Toast.LENGTH_LONG).show();
                 }
-            } else {
-                String nouser = "LOGIN FAILED: NO USER " + u + " EXISTS";
-                Toast.makeText(this, nouser, Toast.LENGTH_LONG).show();
             }
         }
         if (thePhantomBean == false){
