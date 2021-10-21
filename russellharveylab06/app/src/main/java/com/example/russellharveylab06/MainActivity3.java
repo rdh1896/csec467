@@ -16,6 +16,7 @@ import android.security.keystore.KeyProperties;
 import android.security.keystore.UserNotAuthenticatedException;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -62,52 +63,6 @@ public class MainActivity3 extends AppCompatActivity {
         keyAlias = i.getStringExtra("keyAlias");
     }
 
-    public void authenticate(View v) {
-        Executor ex = ContextCompat.getMainExecutor(this);
-        PromptInfo details = new PromptInfo.Builder()
-                .setTitle("Lab06 Authenticator")
-                .setSubtitle("Please provide your PIN.")
-                .setNegativeButtonText("Cancel")
-                .setAllowedAuthenticators(
-                        BiometricManager.Authenticators.BIOMETRIC_STRONG // Allow biometric
-                        // | BiometricManager.Authenticators.DEVICE_CREDENTIAL // Allow pin
-                ).build();
-        BiometricPrompt prompt = new BiometricPrompt(this, ex, new BiometricPrompt.AuthenticationCallback() {
-            @Override
-            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
-                super.onAuthenticationError(errorCode, errString);
-                Toast.makeText(getApplicationContext(), "Auth Error", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
-                super.onAuthenticationSucceeded(result);
-                Toast.makeText(getApplicationContext(), "Auth Succ", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onAuthenticationFailed() {
-                super.onAuthenticationFailed();
-                Toast.makeText(getApplicationContext(), "Auth Fail", Toast.LENGTH_LONG).show();
-            }
-        });
-        prompt.authenticate(details);
-
-    }
-    
-    /*
-    public void genIv(View v) {
-        SecureRandom generator = null;
-
-        try {
-            generator = SecureRandom.getInstanceStrong();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        iv = generator.generateSeed(12);
-    }
-     */
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     public void encrypt (View v) {
@@ -125,23 +80,9 @@ public class MainActivity3 extends AppCompatActivity {
             KeyStore ks = KeyStore.getInstance("AndroidKeyStore");
             ks.load(null);
 
-            /*
-            if (!ks.containsAlias(keyAlias)){
-                // if the alias does not exist, create a new key
-                KeyGenParameterSpec keySpec = new KeyGenParameterSpec.Builder(keyAlias, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
-                        .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-                        .setUserAuthenticationRequired(true)
-                        .setUserAuthenticationParameters(120, KeyProperties.AUTH_DEVICE_CREDENTIAL)
-                        .setKeySize(128)
-                        .build();
-                KeyGenerator kg = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
-                kg.init(keySpec);
-            }
-             */
-
             if(!ks.containsAlias(keyAlias)) {
                 Toast.makeText(this, "Key Not Found", Toast.LENGTH_LONG).show();
+                return;
             }
             
             SecretKey k = ((KeyStore.SecretKeyEntry) ks.getEntry(keyAlias, null)).getSecretKey();
@@ -261,8 +202,8 @@ public class MainActivity3 extends AppCompatActivity {
 
             byte[] plainText = c.doFinal(cipherText);
             String readablePT = new String (plainText, "UTF-8");
-            Toast.makeText(this, readablePT, Toast.LENGTH_LONG).show();
-
+            EditText display = (EditText)findViewById(R.id.edtData);
+            display.setText(readablePT, TextView.BufferType.EDITABLE);
         } catch (UserNotAuthenticatedException e) {
             Executor ex = ContextCompat.getMainExecutor(this);
             PromptInfo details = new PromptInfo.Builder()
@@ -314,7 +255,70 @@ public class MainActivity3 extends AppCompatActivity {
         } catch (InvalidAlgorithmParameterException e) {
             e.printStackTrace();
         }
-        /*
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    public void newKey(View v) {
+        KeyGenParameterSpec keySpec = new KeyGenParameterSpec.Builder(keyAlias, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                .setUserAuthenticationRequired(true)
+                .setUserAuthenticationParameters(120, KeyProperties.AUTH_BIOMETRIC_STRONG)
+                .setKeySize(128)
+                .build();
+        KeyGenerator kg = null;
+
+        try {
+            kg = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            kg.init(keySpec);
+            kg.generateKey();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+/*
+
+public void authenticate(View v) {
+        Executor ex = ContextCompat.getMainExecutor(this);
+        PromptInfo details = new PromptInfo.Builder()
+                .setTitle("Lab06 Authenticator")
+                .setSubtitle("Please provide your PIN.")
+                .setNegativeButtonText("Cancel")
+                .setAllowedAuthenticators(
+                        BiometricManager.Authenticators.BIOMETRIC_STRONG // Allow biometric
+                        // | BiometricManager.Authenticators.DEVICE_CREDENTIAL // Allow pin
+                ).build();
+        BiometricPrompt prompt = new BiometricPrompt(this, ex, new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                super.onAuthenticationError(errorCode, errString);
+                Toast.makeText(getApplicationContext(), "Auth Error", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                super.onAuthenticationSucceeded(result);
+                Toast.makeText(getApplicationContext(), "Auth Succ", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onAuthenticationFailed() {
+                super.onAuthenticationFailed();
+                Toast.makeText(getApplicationContext(), "Auth Fail", Toast.LENGTH_LONG).show();
+            }
+        });
+        prompt.authenticate(details);
+
+    }
         EditText edtFilename = (EditText)findViewById(R.id.edtFilename);
 
         String fn = edtFilename.getText().toString();
@@ -379,8 +383,6 @@ public class MainActivity3 extends AppCompatActivity {
             e.printStackTrace();
         }
         */
-    }
-}
 
 /*
         // Get Cipher
